@@ -8,9 +8,9 @@ var draw_graph_one = function (canvas_context) {
 // quasi"main" function
 var load_page_data = function () {
   // variables
-  const taken_attempts = localStorage.getItem("attempts_taken");
-  const possible_attempts = localStorage.getItem("attempts_possible");
-  const word_length = localStorage.getItem("wordLength");
+  const taken_attempts = Number(localStorage.getItem("attempts_taken"));
+  const possible_attempts = Number(localStorage.getItem("attempts_possible"));
+  const word_length = Number(localStorage.getItem("wordLength"));
 
   // 1. generate the current score
   // for example, if the player took all 6 attempts out of 6,
@@ -24,7 +24,7 @@ var load_page_data = function () {
   document.getElementById("current_score").textContent = current_score;
 
   // 2. generate the total score
-  let past_total_score = localStorage.getItem("VERBATIM_LS_total_score");
+  let past_total_score = Number(localStorage.getItem("VERBATIM_LS_total_score"));
   if (typeof total_score === 'undefined') {
     total_score = 0;
   }
