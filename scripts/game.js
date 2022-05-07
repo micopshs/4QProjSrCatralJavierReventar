@@ -13,15 +13,15 @@ const FOUR_LETTER_WORDS = [
 
 const FIVE_LETTER_WORDS = [
   "amber",
-  "broad",
-  "depth",
-  "fixed",
-  "panel",
-  "quack",
-  "rural",
-  "seven",
-  "thief",
-  "unity"
+  //"broad",
+  //"depth",
+  //"fixed",
+  //"panel",
+  //"quack",
+  //"rural",
+  //"seven",
+  //"thief",
+  //"unity"
 ];
 
 const SIX_LETTER_WORDS = [
