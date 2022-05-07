@@ -37,3 +37,5 @@ var load_page_data = function () {
   let canvas_context = first_canvas.getContext('2d');
   draw_graph_one(canvas_context);
 }
+
+document.getElementsByTagName("body")[0].addEventListener("load", load_page_data());
