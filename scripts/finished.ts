@@ -30,7 +30,20 @@ var calculate_score = function (
   return current_score;
 };
 
-const make_histogram = function (
+var calculate_total_score = function (current_score: number): number {
+  let past_total_score = Number(
+    localStorage.getItem("VERBATIM_LS_total_score")
+  );
+  if (isNaN(past_total_score) || past_total_score == null) {
+    past_total_score = 0;
+  }
+
+  const new_total_score = past_total_score + current_score;
+  localStorage.setItem("VERBATIM_LS_total_score", new_total_score.toString());
+  return new_total_score;
+};
+
+var make_histogram = function (
   attempt_arr: VerbatimAttempt[]
 ): Map<number, number> {
   let histogram: Map<number, number> = new Map();
@@ -39,20 +52,22 @@ const make_histogram = function (
   for (const num of taken_attempt_arr) {
     histogram.set(num, histogram.get(num) ? histogram.get(num) + 1 : 1);
   }
+
   // ensure that every number from 1 upward has its own thing
   for (let i = 1; i <= attempt_arr[0].wordLength + 1; ++i) {
     if (!histogram.get(i)) {
       histogram.set(i, 0);
     }
   }
+
   // force all the things with too high attempts into their own category, -1
+  if (!histogram.get(-1)) {
+    histogram.set(-1, 0);
+  }
   for (const i of taken_attempt_arr.filter(
     (attempt_number) => attempt_number > attempt_arr[0].wordLength + 1
   )) {
-    histogram.set(
-      -1,
-      histogram.get(i) + (histogram.get(-1) ? histogram.get(-1) : 0)
-    );
+    histogram.set(-1, histogram.get(i) + histogram.get(-1));
     histogram.delete(i);
   }
 
@@ -65,6 +80,77 @@ const map_to_obj = (map: Map<any, any>): object => {
   return obj;
 };
 
+const construct_par = (str: string): HTMLElement => {
+  let element = document.createElement("p");
+  element.appendChild(document.createTextNode(str));
+  return element;
+};
+
+const construct_svg = (
+  given_num: number,
+  greatest_num: number,
+  special_value = false
+): Element => {
+  const height_px = 25;
+  const length_px = (300 * given_num) / greatest_num;
+  const text_space_px = height_px;
+
+  const make_svg_elem = (
+    tag_name: string,
+    content: string,
+    attributes: Map<string, string>
+  ): Element => {
+    let element = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      tag_name
+    );
+    element.appendChild(document.createTextNode(content));
+    for (let attr of attributes) {
+      element.setAttribute(attr[0], attr[1]);
+    }
+    return element;
+  };
+
+  // prepare the element
+  let svg_elem = make_svg_elem(
+    "svg",
+    "",
+    new Map([
+      ["version", "1.1"],
+      ["height", height_px.toString()],
+      ["width", (300 + text_space_px).toString()],
+    ])
+  );
+
+  svg_elem.appendChild(
+    make_svg_elem(
+      "rect",
+      "",
+      new Map([
+        ["height", "100%"],
+        ["width", `${length_px + text_space_px}px`],
+        ["cx", "10px"],
+        ["cy", "10px"],
+        ["class", `${special_value ? "bar-special" : "bar-normal"}`],
+      ])
+    )
+  );
+
+  svg_elem.appendChild(
+    make_svg_elem(
+      "text",
+      given_num.toString(),
+      new Map([
+        ["x", `${length_px}`],
+        ["y", "0px"],
+        ["text-anchor", "start"],
+      ])
+    )
+  );
+
+  return svg_elem;
+};
+
 var write_recent_attempts_sc = function (
   container: HTMLElement,
   past_attempts: VerbatimAttempt[]
@@ -72,14 +158,23 @@ var write_recent_attempts_sc = function (
   // get attempts in the same category
   const last_attempt = past_attempts[past_attempts.length - 1];
   const last_attempt_category = last_attempt.wordLength;
-  const attempts_same_category = past_attempts.filter((attempt) => {
-    attempt.wordLength === last_attempt_category;
-  });
+  const attempts_same_category = past_attempts.filter(
+    (attempt) => attempt.wordLength === last_attempt_category
+  );
 
   // figure out the exact leaderboard
   const histogram = make_histogram(attempts_same_category);
-
-  container.textContent = map_to_obj(histogram).toString();
+  const max_try_count = Math.max(...histogram.values());
+  for (let [try_number, try_count] of histogram) {
+    container.append(construct_par(try_number.toString()));
+    container.append(
+      construct_svg(
+        try_count,
+        max_try_count,
+        last_attempt.takenAttempts === try_number
+      )
+    );
+  }
 };
 
 // quasi"main" function
@@ -101,31 +196,26 @@ var load_page_data = function () {
     current_score.toString();
 
   // 2. generate the total score
-  let past_total_score = Number(
-    localStorage.getItem("VERBATIM_LS_total_score")
-  );
-  if (typeof past_total_score === "undefined") {
-    past_total_score = 0;
-  }
-  const new_total_score = past_total_score + current_score;
-  localStorage.setItem("VERBATIM_LS_total_score", new_total_score.toString());
-  document.getElementById("total_score").textContent =
-    new_total_score.toString();
+  let total_score = calculate_total_score(current_score);
+  document.getElementById("total_score").textContent = total_score.toString();
 
   // 3. get the variables for the past tries
-  let past_attempts: VerbatimAttempt[] = JSON.parse(
-    localStorage.getItem("VERBATIM_LS_past_attempts")
-  );
-  if (typeof past_attempts === undefined) {
-    past_attempts = [];
+  let past_attempt_string = localStorage.getItem("VERBATIM_LS_past_attempts");
+  let past_attempts: VerbatimAttempt[] = [];
+  if (past_attempt_string.length !== 0) {
+    past_attempts = JSON.parse(past_attempt_string);
   }
+
   past_attempts.push({
     takenAttempts: taken_attempts,
     maximumAttempts: max_attempts,
     wordLength: word_length,
     score: current_score,
   });
-  localStorage.setItem("VERBATIM_LS_past_attempts", past_attempts.toString());
+  localStorage.setItem(
+    "VERBATIM_LS_past_attempts",
+    JSON.stringify(past_attempts)
+  );
 
   // 4. manipulate the div into showing us our results
   let container_sc = document.getElementById("recent_attempts_same_category");

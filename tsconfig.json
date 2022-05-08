@@ -3,5 +3,9 @@
         "target": "es2015",
         "module": "commonjs",
         "sourceMap": true
-    }
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "compileOnSave": true,
 }
