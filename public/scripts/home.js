@@ -1,5 +1,5 @@
 // stuff
-import globalSettings from "../js/globals.js";
+import globalSettings from "./globals.js";
 /**
  * Toggles the visibility of a dialog element
  * with the object itself passed in.
@@ -118,4 +118,4 @@ window.addEventListener("load", function () {
         toggleVisibility(mechanics_dialog);
     });
 });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=home.js.map

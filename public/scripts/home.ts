@@ -137,7 +137,7 @@ window.addEventListener("load", function () {
     location.href = "htdocs/game.html";
   });
   btns[3].addEventListener("click", () => {
-    location.href = "./finished.html";
+    location.href = "htdocs/finished.html";
   });
   document
     .querySelector("#mechanics > button")
