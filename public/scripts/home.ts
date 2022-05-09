@@ -1,6 +1,6 @@
 // stuff
 
-import globalSettings from "../js/globals.js";
+import globalSettings from "./globals.js";
 
 /**
  * Toggles the visibility of a dialog element
@@ -134,10 +134,10 @@ window.addEventListener("load", function () {
     toggleVisibility(settings_dialog);
   });
   btns[2].addEventListener("click", () => {
-    location.href = "htdocs/game.html";
+    location.href = "/html/game.html";
   });
   btns[3].addEventListener("click", () => {
-    location.href = "htdocs/finished.html";
+    location.href = "/html/finished.html";
   });
   document
     .querySelector("#mechanics > button")

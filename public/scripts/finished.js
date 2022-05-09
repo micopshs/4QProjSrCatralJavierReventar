@@ -38,7 +38,7 @@ var calculate_score = function (taken_attempts, max_attempts, word_length) {
     // disincentivises taking too many attempts.
     // for example, if a person takes 5 attempts with 6 maximum,
     // their score is higher than if they took 5 attempts with 7 maximum.
-    const total_attempt_fraction = Math.pow(0.5, (max_attempts - word_length - 1));
+    const total_attempt_fraction = 0.5 ** (max_attempts - word_length - 1);
     const current_score = Math.ceil(100 * total_attempt_fraction * taken_attempt_fraction);
     return current_score;
 };

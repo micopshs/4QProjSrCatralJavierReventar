@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
-        "target": "es2015",
-        "module": "es2015",
+        "target": "es2017",
+        "module": "es2020",
         "sourceMap": true,
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "types": [
+            "node"
+        ]
     },
     "exclude": [
         "node_modules"
