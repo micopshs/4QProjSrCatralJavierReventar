@@ -60,7 +60,7 @@ function redirect() {
 }
 
 function warn() {
-  return confirm("Are you sure you want to leave this page?\nAll progress will be reset once you do so");
+  return confirm("");
 }
 
 
@@ -94,11 +94,11 @@ function game() {
  rightWordList = rightWordList.concat(loadCustomList(JSON.parse([localStorage.getItem("settings")])["wordPool"]));
   rightWord = rightWordList[Math.floor(Math.random() * rightWordList.length)];
   
-  localStorage.setItem("attempt", "");
-  localStorage.setItem("attemptCount", JSON.parse(1));
-  localStorage.setItem("position", JSON.parse(1));
-  localStorage.setItem("rightWord", rightWord);
-  localStorage.setItem("isFinished", JSON.parse(false));
+  sessionStorage.setItem("attempt", "");
+  sessionStorage.setItem("attemptCount", JSON.parse(1));
+  sessionStorage.setItem("position", JSON.parse(1));
+  sessionStorage.setItem("rightWord", rightWord);
+  sessionStorage.setItem("isFinished", JSON.parse(false));
   
   generateGrid();
 }
@@ -124,45 +124,45 @@ function generateGrid() {
 }
 
 function addLetter(btn) {
-  let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
+  let position = Number.parseInt(JSON.parse(sessionStorage.getItem("position")));
   let wordLength = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["wordLength"]);
-  let isFinished = JSON.parse(localStorage.getItem("isFinished"));
+  let isFinished = JSON.parse(sessionStorage.getItem("isFinished"));
 
   if (isFinished) return;
   
   if (position <= wordLength) {
-    let attempt = localStorage.getItem("attempt");
-    let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
+    let attempt = sessionStorage.getItem("attempt");
+    let attemptCount = Number.parseInt(JSON.parse(sessionStorage.getItem("attemptCount")));
     let cell = document.getElementById(`l${attemptCount}${position}`);
     
     cell.innerHTML = btn.innerHTML;
-    localStorage.setItem("position", JSON.parse((position + 1)));
-    localStorage.setItem("attempt", (attempt += cell.innerHTML));
+    sessionStorage.setItem("position", JSON.parse((position + 1)));
+    sessionStorage.setItem("attempt", (attempt += cell.innerHTML));
   }
 }
 
 function popLetter() {
-  let attempt = localStorage.getItem("attempt");
-  let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
-  let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
-  let isFinished = JSON.parse(localStorage.getItem("isFinished"));
+  let attempt = sessionStorage.getItem("attempt");
+  let attemptCount = Number.parseInt(JSON.parse(sessionStorage.getItem("attemptCount")));
+  let position = Number.parseInt(JSON.parse(sessionStorage.getItem("position")));
+  let isFinished = JSON.parse(sessionStorage.getItem("isFinished"));
   
   if (position == 1 || isFinished) return;
   
   let cell = document.getElementById(`l${attemptCount}${(position - 1)}`);
   cell.innerHTML = "";
-  localStorage.setItem("position", JSON.parse((position - 1)));
-  localStorage.setItem("attempt", attempt.slice(0, -1));
+  sessionStorage.setItem("position", JSON.parse((position - 1)));
+  sessionStorage.setItem("attempt", attempt.slice(0, -1));
 } 
 
 function validateAttempt() {
-  let isFinished = JSON.parse(localStorage.getItem("isFinished")); 
+  let isFinished = JSON.parse(sessionStorage.getItem("isFinished")); 
   let wordLength = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["wordLength"]);
-  let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
-  let attempt = localStorage.getItem("attempt");
-  let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
+  let position = Number.parseInt(JSON.parse(sessionStorage.getItem("position")));
+  let attempt = sessionStorage.getItem("attempt");
+  let attemptCount = Number.parseInt(JSON.parse(sessionStorage.getItem("attemptCount")));
   let maxAttempts = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["maxAttempts"]);
-  let rightWord = localStorage.getItem("rightWord").toUpperCase();
+  let rightWord = sessionStorage.getItem("rightWord").toUpperCase();
 
   if (isFinished) return
 
@@ -190,8 +190,7 @@ function validateAttempt() {
   }
 
   if (attempt == rightWord) {
-    console.log("Congrats");
-    localStorage.setItem("isFinished", JSON.parse(true));
+    sessionStorage.setItem("isFinished", JSON.parse(true));
 
     // this will be used in the finished_js file
     localStorage.setItem("attempts_taken", attemptCount);
@@ -202,11 +201,10 @@ function validateAttempt() {
   } 
 
   if (attemptCount + 1 <= maxAttempts) {
-    localStorage.setItem("attempt", "");
-    localStorage.setItem("attemptCount", JSON.parse(attemptCount + 1));
-    localStorage.setItem("position", JSON.parse(1));
+    sessionStorage.setItem("attempt", "");
+    sessionStorage.setItem("attemptCount", JSON.parse(attemptCount + 1));
+    sessionStorage.setItem("position", JSON.parse(1));
   } else {
-    console.log("You noob");
-    localStorage.setItem("isFinished", JSON.parse(true));
+    sessionStorage.setItem("isFinished", JSON.parse(true));
   }
 }
