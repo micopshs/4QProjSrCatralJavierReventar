@@ -53,22 +53,23 @@
   </dialog>
   <dialog id="settings">
     <h1>Settings</h1>      
-    <form id="settingsForm" onsubmit="toggleVisibility(settings); return saveSettings(this)">
+    <form id="settingsForm" onsubmit="toggleVisibility(settings); return saveSettings(this)"
+      onreset="return resetSettings(this)">
       <!-- Note: label is separate in order to get grid positioning to work -->
       <label for="wordLength">Word Length (L):<br> (bet. 4-7)</label>
       <input type="number" id="wordLength" name="wordLength" value="5" min="4" max="7" step="1" 
-        onchange="setMaxAttemptBounds()"></input>
-      <label for="maxAttempts">Max attempts:<br> (bet. <span id="minBound">5</span>-
-        <span id="maxBound">10</span>) </label>
-      <input type="number" id="maxAttempts" name="maxAttempts" value="6" min="5" max="10" step="1"></input>
+        style="border: 2px solid green" onchange="setMaxAttemptBounds()" onblur="validateInput(this)" required />
+      <label for="maxAttempts">Max attempts:<br> (bet. <span id="minBound">5</span>-<span id="maxBound">10</span>) </label>
+      <input type="number" id="maxAttempts" name="maxAttempts" value="6" min="5" max="10" step="1" 
+        style="border: 2px solid green" onblur="validateInput(this)" required />
       <label for="wordPool">Word Pool: (Separate entries by spaces)</label>
       <textarea id="wordPool" name="wordPool"></textarea>
       <label for="hints">Disable hints?</label>
       <input type="checkBox" id="hints" name="hints" value="Yes" onchange="toggleField(hintColor)"></input>
       <label for="correctColor">Set color for correct guesses</label>
-      <input type="color" id="correctColor" name="correctColor" value="#538d4e"></input>
+      <input type="color" id="correctColor" name="correctColor" value="#538d4e" />
       <label for="hintColor">Set color for hints</label>
-      <input type="color" id="hintColor" name="hintColor" value="#b59f3b"></input> 
+      <input type="color" id="hintColor" name="hintColor" value="#b59f3b" /> 
       <div id="keybuttons">
         <input type="submit" value="Save Changes"></input>
         <input type="reset" value="Restore Default"></input>

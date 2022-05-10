@@ -1,3 +1,13 @@
+function validateInput(input) {
+  let condition = (
+    Number.parseInt(input.value) <= input.max && 
+    Number.parseInt(input.value) >= input.min &&
+    input.value % 1 == 0
+  );
+  input.style.border = condition ? "2px solid green" : "2px solid red";
+} 
+
+
 function toggleVisibility(target) {
   target.open = !(target.open)
   if (target.open) document.body.style.background = "rgba(0, 0, 0, 0.7)";
@@ -6,6 +16,9 @@ function toggleVisibility(target) {
 
 function toggleField(target) {
   target.disabled = !(target.disabled);
+  let targetLabel = document.querySelector(`label[for='${target.id}']`);
+
+  targetLabel.style.textDecoration = target.disabled ? "line-through" : "none";
 }
 
 function setMaxAttemptBounds() {
@@ -17,6 +30,8 @@ function setMaxAttemptBounds() {
   // Change display
   minBound.innerHTML = min;
   maxBound.innerHTML = max;
+
+  validateInput(maxAttempts);
 }
 
 function saveSettings(form) {
@@ -39,6 +54,15 @@ function saveSettings(form) {
   document.documentElement.style.setProperty("--guess-wrong-place", formObject["hintColor"]);
   // store the entire form data to local storage
   localStorage.setItem("settings", JSON.stringify(formObject));
+  return false;
+}
+
+function resetSettings(form) {
+  if (confirm("Reset form? All your changes will be lost!")) {
+    wordLength.border = "2px solid green";
+    maxAttempts.border = "2px solid green";
+    return true;
+  }
   return false;
 }
 
