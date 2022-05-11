@@ -127,17 +127,22 @@ function validateAttempt() {
     const attempt = sessionStorage.getItem("attempt");
     const attemptCount = Number(sessionStorage.getItem("attemptCount"));
     const maxAttempts = globalSettings.maxAttempts;
-    let checkingWord = sessionStorage.getItem("rightWord").toUpperCase();
+    const correctWord = sessionStorage.getItem("rightWord").toUpperCase();
     console.log(`Attempt ${attemptCount}`);
     // confirm the correctness of each character
+    let checkingWord = correctWord;
     for (let i = 0; i < wordLength; i++) {
         let attemptChar = attempt[i];
         let rightChar = checkingWord[i];
         let element = document.getElementById(`l${attemptCount}${i + 1}`);
         if (attemptChar == rightChar) {
+            // remove the letter from the checking word so it wont accidentally
+            // activate another yellow card
+            checkingWord = checkingWord.replace(attemptChar, " ");
             element.classList.add("guess-right-place");
         }
         else if (checkingWord.includes(attemptChar)) {
+            // remove the letter as well
             checkingWord = checkingWord.replace(attemptChar, " ");
             element.classList.add("guess-wrong-place");
         }
@@ -146,12 +151,12 @@ function validateAttempt() {
         }
     }
     // confirm the correctness of the entire word
-    if (attempt === checkingWord) {
+    if (attempt === correctWord) {
         console.log("Congrats");
         sessionStorage.setItem("isFinished", String(true));
         // this will be used in the finished_js file
+        localStorage.setItem("correct_word", correctWord);
         localStorage.setItem("attempts_taken", String(attemptCount));
-        localStorage.setItem("attempts_possible", String(maxAttempts));
         // redirect to the next page
         window.location.href = "/html/finished.html";
         return;
@@ -165,7 +170,11 @@ function validateAttempt() {
     }
     // no more attempts left. Redirect to new page with a zero score.
     console.log("You noob");
+    localStorage.setItem("correct_word", correctWord);
+    localStorage.setItem("attempts_taken", String(maxAttempts));
     sessionStorage.setItem("isFinished", String(true));
+    // redirect to the next page
+    window.location.href = "/html/finished.html";
 }
 window.addEventListener("load", load_page_data, false);
 //# sourceMappingURL=game.js.map

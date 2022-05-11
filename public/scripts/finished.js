@@ -1,10 +1,16 @@
 // stuff
+import globalSettings from "./globals.js";
 // quasi"main" function
 var load_page_data = function () {
+    console.log("here");
     // variables
     const taken_attempts = Number(localStorage.getItem("attempts_taken"));
-    const max_attempts = Number(localStorage.getItem("attempts_possible"));
-    const word_length = Number(JSON.parse(localStorage.getItem("settings"))["wordLength"]);
+    localStorage.removeItem("attempts_taken");
+    const max_attempts = globalSettings.maxAttempts;
+    const word_length = globalSettings.wordLength;
+    // 1bis. fill in the correct word
+    document.getElementById("correct_word").textContent = localStorage.getItem("correct_word");
+    localStorage.removeItem("correct_word");
     // 1. generate the current score
     const current_score = calculate_score(taken_attempts, max_attempts, word_length);
     document.getElementById("current_score").textContent =
@@ -15,7 +21,7 @@ var load_page_data = function () {
     // 3. get the variables for the past tries
     let past_attempt_string = localStorage.getItem("VERBATIM_LS_past_attempts");
     let past_attempts = [];
-    if (past_attempt_string.length !== 0) {
+    if (past_attempt_string !== null) {
         past_attempts = JSON.parse(past_attempt_string);
     }
     past_attempts.push({
