@@ -8,13 +8,13 @@
   <meta name="author" content="S.E. Catral, O.M. Javier, and R.A. Reventar">
   <meta name="description" content="A wordle implementation">
   <meta name="keywords" content="HTML CSS JavaScript">
-  <meta name="revised" content="29-04-2022">
+  <meta name="revised" content="11-05-2022">
   <!-- CSS / JS -->
   <link rel="stylesheet" href="../css/main.css" />
   <link rel="stylesheet" href="../css/game.css"/>
   <script src="../scripts/game.js" defer></script>
 </head>
-<body onload="if (redirect()) game();">
+<body onload="if (redirect()) game();" onbeforeunload="return warn();">
   <main id="content">
     <!-- Div for displaying -->
     <div id="playingGridContainer"><div id="playingGrid"></div></div>
@@ -57,8 +57,8 @@
     </div>
   </main>
   <nav>
-    <button onclick="if (warn()) location.href='../index.html'">Previous (Home)</button>
-    <button onclick="if (warn()) location.href='./finished.html'">Next (Leaderboards)</button>
+    <button onclick="location.href='../index.html'">Previous (Home)</button>
+    <button onclick="location.href='./finished.html'">Next (Leaderboards)</button>
   </nav>
 </body>
 </html>
