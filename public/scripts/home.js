@@ -1,5 +1,40 @@
 // stuff
 import globalSettings from "./globals.js";
+// quasi-"main" function
+const load_page_data = function () {
+    // set up all the stuff
+    const settings_dialog = document.getElementById("settingsDialog");
+    const mechanics_dialog = document.getElementById("mechanics");
+    document
+        .querySelector("#settingsForm")
+        .addEventListener("submit", function () {
+        return saveSettings(this);
+    });
+    document.querySelector("#wordLength").addEventListener("change", function () {
+        setMaxAttemptBounds(this, document.querySelector("#maxAttempts"));
+    });
+    document.querySelector("#hints").addEventListener("change", () => {
+        disableInput(document.querySelector("#hintColor"));
+    });
+    let btns = document.querySelectorAll("main > button");
+    btns[0].addEventListener("click", () => {
+        toggleVisibility(mechanics_dialog);
+    });
+    btns[1].addEventListener("click", () => {
+        toggleVisibility(settings_dialog);
+    });
+    btns[2].addEventListener("click", () => {
+        location.href = "/html/game.html";
+    });
+    btns[3].addEventListener("click", () => {
+        location.href = "/html/finished.html";
+    });
+    document
+        .querySelector("#mechanics > button")
+        .addEventListener("click", () => {
+        toggleVisibility(mechanics_dialog);
+    });
+};
 /**
  * Toggles the visibility of a dialog element
  * with the object itself passed in.
@@ -74,6 +109,7 @@ const validateWordBank = (input_bank, word_length) => {
 function saveSettings(form) {
     // preserve settings in the global
     globalSettings.setSettings(new FormData(form));
+    globalSettings.saveSettings();
     // validate the word bank
     const word_bank = form.querySelector("textarea").value;
     if (!validateWordBank(word_bank, globalSettings.wordLength)) {
@@ -86,36 +122,5 @@ function saveSettings(form) {
     toggleVisibility(document.querySelector("#settingsDialog"));
     return false;
 }
-window.addEventListener("load", function () {
-    // set up all the stuff
-    const settings_dialog = document.getElementById("settingsDialog");
-    const mechanics_dialog = document.getElementById("mechanics");
-    document.querySelector("#settingsForm").addEventListener("submit", function () {
-        return saveSettings(this);
-    });
-    document.querySelector("#wordLength").addEventListener("change", function () {
-        setMaxAttemptBounds(this, document.querySelector("#maxAttempts"));
-    });
-    document.querySelector("#hints").addEventListener("change", () => {
-        disableInput(document.querySelector("#hintColor"));
-    });
-    let btns = document.querySelectorAll("main > button");
-    btns[0].addEventListener("click", () => {
-        toggleVisibility(mechanics_dialog);
-    });
-    btns[1].addEventListener("click", () => {
-        toggleVisibility(settings_dialog);
-    });
-    btns[2].addEventListener("click", () => {
-        location.href = "/html/game.html";
-    });
-    btns[3].addEventListener("click", () => {
-        location.href = "/html/finished.html";
-    });
-    document
-        .querySelector("#mechanics > button")
-        .addEventListener("click", () => {
-        toggleVisibility(mechanics_dialog);
-    });
-});
+window.addEventListener("load", load_page_data, false);
 //# sourceMappingURL=home.js.map

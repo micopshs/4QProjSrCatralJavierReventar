@@ -1,62 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!-- Page Name -->
-  <title>Verbatim: Playing Grid</title>
-  <!-- Meta Tags -->
-  <meta charset="utf-8">
-  <meta name="author" content="S.E. Catral, O.M. Javier, and R.A. Reventar">
-  <meta name="description" content="A wordle implementation">
-  <meta name="keywords" content="HTML CSS JavaScript">
-  <meta name="revised" content="29-04-2022">
-  <!-- CSS / JS -->
-  <link rel="stylesheet" href="../css/main.css" />
-  <link rel="stylesheet" href="../css/game.css"/>
-  <script src="../scripts/game.js" defer></script>
-</head>
-<body onload="if (redirect()) game();">
-  <main id="content">
-    <div id="playingGridContainer"><div id="playingGrid"></div></div>
-    <div id="buttonsGrid">
-      <div>
-        <button onclick="addLetter(this)">Q</button>
-        <button onclick="addLetter(this)">W</button>
-        <button onclick="addLetter(this)">E</button>
-        <button onclick="addLetter(this)">R</button>
-        <button onclick="addLetter(this)">T</button>
-        <button onclick="addLetter(this)">Y</button>
-        <button onclick="addLetter(this)">U</button>
-        <button onclick="addLetter(this)">I</button>
-        <button onclick="addLetter(this)">O</button>
-        <button onclick="addLetter(this)">P</button>
+  <head>
+    <!-- Page Name -->
+    <title>Verbatim: Playing Grid</title>
+    <!-- Meta Tags -->
+    <meta charset="utf-8" />
+    <meta name="author" content="S.E. Catral, O.M. Javier, and R.A. Reventar" />
+    <meta name="description" content="A wordle implementation" />
+    <meta name="keywords" content="HTML CSS JavaScript" />
+    <meta name="revised" content="29-04-2022" />
+    <!-- CSS / JS -->
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/game.css" />
+    <!-- Ancient magic from the gods on high to make the ts work? -->
+    <script>
+      var exports = {};
+    </script>
+    <script type="module" src="../scripts/game.js" defer></script>
+  </head>
+  <body>
+    <main id="content">
+      <div id="playingGridContainer"><div id="playingGrid"></div></div>
+      <div id="buttonsGrid">
+        <div>
+          <button class="letterButton">Q</button>
+          <button class="letterButton">W</button>
+          <button class="letterButton">E</button>
+          <button class="letterButton">R</button>
+          <button class="letterButton">T</button>
+          <button class="letterButton">Y</button>
+          <button class="letterButton">U</button>
+          <button class="letterButton">I</button>
+          <button class="letterButton">O</button>
+          <button class="letterButton">P</button>
+        </div>
+        <div>
+          <button class="letterButton">A</button>
+          <button class="letterButton">S</button>
+          <button class="letterButton">D</button>
+          <button class="letterButton">F</button>
+          <button class="letterButton">G</button>
+          <button class="letterButton">H</button>
+          <button class="letterButton">J</button>
+          <button class="letterButton">K</button>
+          <button class="letterButton">L</button>
+        </div>
+        <div>
+          <button id="enter">ENTER</button>
+          <button class="letterButton">Z</button>
+          <button class="letterButton">X</button>
+          <button class="letterButton">C</button>
+          <button class="letterButton">V</button>
+          <button class="letterButton">B</button>
+          <button class="letterButton">N</button>
+          <button class="letterButton">M</button>
+          <button id="remove">REMOVE</button>
+        </div>
       </div>
-      <div>
-        <button onclick="addLetter(this)">A</button>
-        <button onclick="addLetter(this)">S</button>
-        <button onclick="addLetter(this)">D</button>
-        <button onclick="addLetter(this)">F</button>
-        <button onclick="addLetter(this)">G</button>
-        <button onclick="addLetter(this)">H</button>
-        <button onclick="addLetter(this)">J</button>
-        <button onclick="addLetter(this)">K</button>
-        <button onclick="addLetter(this)">L</button>
-      </div>
-      <div>
-        <button onclick="validateAttempt()">ENTER</button>
-        <button onclick="addLetter(this)">Z</button>
-        <button onclick="addLetter(this)">X</button>
-        <button onclick="addLetter(this)">C</button>
-        <button onclick="addLetter(this)">V</button>
-        <button onclick="addLetter(this)">B</button>
-        <button onclick="addLetter(this)">N</button>
-        <button onclick="addLetter(this)">M</button>
-        <button onclick="popLetter()">REMOVE</button>
-      </div>
-    </div>
-  </main>
-  <nav>
-    <button onclick="if (warn()) location.href='../index.html'">Previous (Home)</button>
-    <button onclick="if (warn()) location.href='./finished.html'">Next (Leaderboards)</button>
-  </nav>
-</body>
+    </main>
+    <nav>
+      <button id="back" onclick="if (warn()) location.href='../index.html'">
+        Previous (Home)
+      </button>
+      <button id="next">
+        Next (Leaderboards)
+      </button>
+    </nav>
+  </body>
 </html>

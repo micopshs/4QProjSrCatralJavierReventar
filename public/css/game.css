@@ -79,6 +79,24 @@ main {
   font-size: 150%;
 }
 
+.play-grid-cell.guess-wasted {
+  background-color: var(--guess-wasted);
+  color: var(--guess-text-color);
+  font-weight: bold;
+}
+
+.play-grid-cell.guess-wrong-place {
+  background-color: var(--guess-wrong-place);
+  color: var(--guess-text-color);
+  font-weight: bold;
+}
+
+.play-grid-cell.guess-right-place {
+  background-color: var(--guess-right-place);
+  color: var(--guess-text-color);
+  font-weight: bold;
+}
+
 nav {
   width: 100%;
   text-align: center;

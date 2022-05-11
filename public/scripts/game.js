@@ -1,109 +1,50 @@
-const FOUR_LETTER_WORDS = [
-    "boss",
-    "cast",
-    "drew",
-    "fish",
-    "grey",
-    "hang",
-    "knee",
-    "next",
-    "plug",
-    "rich"
-];
-const FIVE_LETTER_WORDS = [
-    "amber",
-    //"broad",
-    //"depth",
-    //"fixed",
-    //"panel",
-    //"quack",
-    //"rural",
-    //"seven",
-    //"thief",
-    //"unity"
-];
-const SIX_LETTER_WORDS = [
-    "behalf",
-    "custom",
-    "driver",
-    "income",
-    "hidden",
-    "module",
-    "permit",
-    "robust",
-    "twelve",
-    "wright"
-];
-const SEVEN_LETTER_WORDS = [
-    "anxiety",
-    "barrier",
-    "diverse",
-    "eastern",
-    "million",
-    "overall",
-    "primary",
-    "require",
-    "succeed",
-    "weather"
-];
-function redirect() {
-    if (Object.keys(localStorage).length == 0) {
+// stuff
+import globalSettings from "./globals.js";
+// quasi-"main" function
+const load_page_data = async () => {
+    // 1. Check if settings have been set.
+    if (globalSettings.isEmpty()) {
         alert("Game settings not loaded! Redirecting you to homepage");
-        location.href = "../index.html";
-        return false;
+        console.log("test2");
+        window.history.back();
     }
-    return true;
-}
-function warn() {
-    return confirm("Are you sure you want to leave this page?\nAll progress will be reset once you do so");
-}
-function loadCustomList(str) {
-    let listArray = str.split(/(\s+)/);
-    let outputArray = [];
-    for (let i = 0; i < listArray.length; i++) {
-        if (listArray[i].includes(" "))
-            listArray.splice(i, 1);
+    // 2. Figure out the right word.
+    let rightWord = "";
+    if (!globalSettings.useWordPool) {
+        let response = await fetch(`/api/randomWord/${globalSettings.wordLength}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        if (response.status !== 200) {
+            alert("No word found.");
+        }
+        let response_json = await response.json();
+        console.log(JSON.stringify(response_json));
+        rightWord = response_json["word"].toUpperCase();
     }
-    for (let i = 0; i < listArray.length; i++) {
-        if (listArray[i] == '')
-            continue;
-        outputArray.push(listArray[i]);
+    else {
+        rightWord =
+            globalSettings.wordPool[Math.floor(Math.random() * globalSettings.wordPool.length)].toUpperCase();
     }
-    return outputArray;
-}
-function game() {
-    let rightWord, rightWordList;
-    switch (Number.parseInt(JSON.parse(localStorage.getItem("settings"))["wordLength"])) {
-        case 4:
-            rightWordList = FOUR_LETTER_WORDS;
-            break;
-        case 5:
-            rightWordList = FIVE_LETTER_WORDS;
-            break;
-        case 6:
-            rightWordList = SIX_LETTER_WORDS;
-            break;
-        case 7:
-            rightWordList = SEVEN_LETTER_WORDS;
-            break;
-    }
-    rightWordList = rightWordList.concat(loadCustomList(JSON.parse([localStorage.getItem("settings")])["wordPool"]));
-    rightWord = rightWordList[Math.floor(Math.random() * rightWordList.length)];
-    localStorage.setItem("attempt", "");
-    localStorage.setItem("attemptCount", JSON.parse(1));
-    localStorage.setItem("position", JSON.parse(1));
-    localStorage.setItem("rightWord", rightWord);
-    localStorage.setItem("isFinished", JSON.parse(false));
-    generateGrid();
-}
-function generateGrid() {
-    let maxRows = JSON.parse(localStorage.getItem("settings"))["maxAttempts"];
-    let maxCols = JSON.parse(localStorage.getItem("settings"))["wordLength"];
-    //if (!maxRows) maxRows = 1;
+    console.log(rightWord);
+    // 3. Prepare local variables.
+    sessionStorage.setItem("attempt", "");
+    sessionStorage.setItem("attemptCount", String(1));
+    sessionStorage.setItem("position", String(1));
+    sessionStorage.setItem("rightWord", rightWord);
+    sessionStorage.setItem("isFinished", String(false));
+    // 4. Create the grid upon which the wordle will begin.
+    let maxRows = globalSettings.maxAttempts;
+    let maxCols = globalSettings.wordLength;
+    let playingGrid = document.getElementById("playingGrid");
     for (let i = 1; i <= maxRows; i++) {
+        // Create a "row" element as a div
         let row = document.createElement("div");
         row.id = `l${i}0`;
         row.classList.add("play-grid-row");
+        // create all the square elements in that row
         for (let j = 1; j <= maxCols; j++) {
             let col = document.createElement("div");
             col.id = `l${i}${j}`;
@@ -112,80 +53,119 @@ function generateGrid() {
         }
         playingGrid.appendChild(row);
     }
+    // 5. Initialize all the buttons.
+    // 5a. Initialize the keyboard buttons.
+    const button_arr = document.getElementsByClassName("letterButton");
+    for (const element of button_arr) {
+        element.addEventListener("click", function () {
+            addLetter(this);
+        });
+    }
+    // 5b. Initialize the buttons on the side of the keyboard.
+    document.getElementById("enter").addEventListener("click", () => {
+        validateAttempt();
+    });
+    document.getElementById("remove").addEventListener("click", () => {
+        popLetter();
+    });
+    // 5c. Initialize the buttons to go backwards and forwards.
+    document.getElementById("next").addEventListener("click", () => {
+        if (warn()) {
+            window.location.href = "/html/finished.html";
+        }
+    });
+    document.getElementById("back").addEventListener("click", () => {
+        if (warn()) {
+            window.location.href = "/html/home.html";
+        }
+    });
+};
+function warn() {
+    return confirm("Are you sure you want to leave this page?\nAll progress will be reset once you do so");
 }
 function addLetter(btn) {
-    let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
-    let wordLength = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["wordLength"]);
-    let isFinished = JSON.parse(localStorage.getItem("isFinished"));
+    const position = Number(sessionStorage.getItem("position"));
+    const wordLength = globalSettings.wordLength;
+    if (position > wordLength)
+        return;
+    const isFinished = sessionStorage.getItem("isFinished") === "true";
     if (isFinished)
         return;
-    if (position <= wordLength) {
-        let attempt = localStorage.getItem("attempt");
-        let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
-        let cell = document.getElementById(`l${attemptCount}${position}`);
-        cell.innerHTML = btn.innerHTML;
-        localStorage.setItem("position", JSON.parse((position + 1)));
-        localStorage.setItem("attempt", (attempt += cell.innerHTML));
-    }
+    let attempt = sessionStorage.getItem("attempt");
+    const attemptCount = Number(sessionStorage.getItem("attemptCount"));
+    let cell = document.getElementById(`l${attemptCount}${position}`);
+    cell.textContent = btn.textContent;
+    sessionStorage.setItem("position", String(position + 1));
+    sessionStorage.setItem("attempt", (attempt += cell.textContent));
 }
 function popLetter() {
-    let attempt = localStorage.getItem("attempt");
-    let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
-    let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
-    let isFinished = JSON.parse(localStorage.getItem("isFinished"));
-    if (position == 1 || isFinished)
+    const position = Number(sessionStorage.getItem("position"));
+    if (position === 1)
         return;
-    let cell = document.getElementById(`l${attemptCount}${(position - 1)}`);
-    cell.innerHTML = "";
-    localStorage.setItem("position", JSON.parse((position - 1)));
-    localStorage.setItem("attempt", attempt.slice(0, -1));
-}
-function validateAttempt() {
-    let isFinished = JSON.parse(localStorage.getItem("isFinished"));
-    let wordLength = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["wordLength"]);
-    let position = Number.parseInt(JSON.parse(localStorage.getItem("position")));
-    let attempt = localStorage.getItem("attempt");
-    let attemptCount = Number.parseInt(JSON.parse(localStorage.getItem("attemptCount")));
-    let maxAttempts = Number.parseInt(JSON.parse(localStorage.getItem("settings"))["maxAttempts"]);
-    let rightWord = localStorage.getItem("rightWord").toUpperCase();
+    const isFinished = sessionStorage.getItem("isFinished") === "true";
     if (isFinished)
         return;
+    let attempt = sessionStorage.getItem("attempt");
+    const attemptCount = Number(sessionStorage.getItem("attemptCount"));
+    let cell = document.getElementById(`l${attemptCount}${position - 1}`);
+    cell.textContent = "";
+    sessionStorage.setItem("position", String(position - 1));
+    sessionStorage.setItem("attempt", attempt.slice(0, -1));
+}
+function validateAttempt() {
+    // check if the game is finished
+    const isFinished = sessionStorage.getItem("isFinished") === "true";
+    if (isFinished)
+        return;
+    // check if word is complete
+    const wordLength = globalSettings.wordLength;
+    const position = Number(sessionStorage.getItem("position"));
     if (position != wordLength + 1) {
         alert(`Please type ${wordLength + 1 - position} more letter/s`);
         return;
     }
+    const attempt = sessionStorage.getItem("attempt");
+    const attemptCount = Number(sessionStorage.getItem("attemptCount"));
+    const maxAttempts = globalSettings.maxAttempts;
+    let checkingWord = sessionStorage.getItem("rightWord").toUpperCase();
     console.log(`Attempt ${attemptCount}`);
+    // confirm the correctness of each character
     for (let i = 0; i < wordLength; i++) {
         let attemptChar = attempt[i];
-        let rightChar = rightWord[i];
+        let rightChar = checkingWord[i];
         let element = document.getElementById(`l${attemptCount}${i + 1}`);
-        if (attemptChar == rightChar)
-            element.style.backgroundColor = "var(--guess-right-place)";
-        else if (rightWord.includes(attemptChar))
-            element.style.backgroundColor = "var(--guess-wrong-place)";
-        else
-            element.style.backgroundColor = "var(--guess-wasted)";
-        element.style.fontWeight = "bold";
-        element.style.color = "var(--guess-text-color)";
+        if (attemptChar == rightChar) {
+            element.classList.add("guess-right-place");
+        }
+        else if (checkingWord.includes(attemptChar)) {
+            checkingWord = checkingWord.replace(attemptChar, " ");
+            element.classList.add("guess-wrong-place");
+        }
+        else {
+            element.classList.add("guess-wasted");
+        }
     }
-    if (attempt == rightWord) {
+    // confirm the correctness of the entire word
+    if (attempt === checkingWord) {
         console.log("Congrats");
-        localStorage.setItem("isFinished", JSON.parse(true));
+        sessionStorage.setItem("isFinished", String(true));
         // this will be used in the finished_js file
-        localStorage.setItem("attempts_taken", attemptCount);
-        localStorage.setItem("attempts_possible", maxAttempts);
+        localStorage.setItem("attempts_taken", String(attemptCount));
+        localStorage.setItem("attempts_possible", String(maxAttempts));
         // redirect to the next page
-        window.location.href = "../htdocs/finished.html";
+        window.location.href = "/html/finished.html";
         return;
     }
+    // check if there are still attempts left
     if (attemptCount + 1 <= maxAttempts) {
-        localStorage.setItem("attempt", "");
-        localStorage.setItem("attemptCount", JSON.parse(attemptCount + 1));
-        localStorage.setItem("position", JSON.parse(1));
+        sessionStorage.setItem("attempt", "");
+        sessionStorage.setItem("attemptCount", String(attemptCount + 1));
+        sessionStorage.setItem("position", String(1));
+        return;
     }
-    else {
-        console.log("You noob");
-        localStorage.setItem("isFinished", JSON.parse(true));
-    }
+    // no more attempts left. Redirect to new page with a zero score.
+    console.log("You noob");
+    sessionStorage.setItem("isFinished", String(true));
 }
+window.addEventListener("load", load_page_data, false);
 //# sourceMappingURL=game.js.map
