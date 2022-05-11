@@ -14,12 +14,6 @@ main {
   padding: 2% 2% 3% 2%;
   border: 2px solid black;
   border-radius: 10px;
-
-  /*display: flex*/
-  /*flex-direction: vertical;*/
-  /*justify-content: center;*/
-
-  /*note to future me: buggy, need correction*/
 }
 
 dialog {
@@ -30,7 +24,7 @@ dialog {
 
   text-align: center;
   width: 50vw;
-  min-width: 300px; 
+  min-width: 300px;
   padding: 20px 50px;
   border-radius: 10px;
 }
@@ -42,8 +36,6 @@ dialog > h1 {
 
 dialog > form {
   display: grid;
-  /*grid-template-columns: 25% 75%;*/
-  /*grid-template-columns: 1fr 1fr;*/
   grid-template-columns: 120px 1fr;
   column-gap: 15px;
   row-gap: 15px;
@@ -69,7 +61,7 @@ dialog > form > div#keybuttons > input {
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid black;
-    
+
   background: none;
   font-family: inherit;
 }
@@ -85,9 +77,9 @@ dialog > div {
 dialog > div > ul > li > .perfectGuess {
   font-weight: bold;
   color: var(--guess-right-place);
-} 
+}
 
 dialog > div > ul > li > .imperfectGuess {
   font-weight: bold;
   color: var(--guess-wrong-place);
-} 
+}
