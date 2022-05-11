@@ -3,7 +3,7 @@
 import globalSettings from "./globals.js";
 
 // quasi-"main" function
-const load_page_data = async () => {
+const loadpagedata = async () => {
   // 1. Check if settings have been set.
   if (globalSettings.isEmpty()) {
     alert("Game settings not loaded! Redirecting you to homepage");
@@ -15,7 +15,7 @@ const load_page_data = async () => {
   let rightWord = "";
 
   if (!globalSettings.useWordPool) {
-    let response = await fetch(`/api/randomWord/${globalSettings.wordLength}`, {
+    const response = await fetch(`/api/randomWord/${globalSettings.wordLength}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,9 +24,9 @@ const load_page_data = async () => {
     if (response.status !== 200) {
       alert("No word found.");
     }
-    let response_json: object = await response.json();
-    console.log(JSON.stringify(response_json));
-    rightWord = response_json["word"].toUpperCase();
+    const responsejson: object = await response.json();
+    console.log(JSON.stringify(responsejson));
+    rightWord = responsejson["word"].toUpperCase();
   } else {
     rightWord =
       globalSettings.wordPool[
@@ -44,19 +44,19 @@ const load_page_data = async () => {
   sessionStorage.setItem("isFinished", String(false));
 
   // 4. Create the grid upon which the wordle will begin.
-  let maxRows = globalSettings.maxAttempts;
-  let maxCols = globalSettings.wordLength;
-  let playingGrid = document.getElementById("playingGrid");
+  const maxRows = globalSettings.maxAttempts;
+  const maxCols = globalSettings.wordLength;
+  const playingGrid = document.getElementById("playingGrid");
 
   for (let i = 1; i <= maxRows; i++) {
     // Create a "row" element as a div
-    let row = document.createElement("div");
+    const row = document.createElement("div");
     row.id = `l${i}0`;
     row.classList.add("play-grid-row");
 
     // create all the square elements in that row
     for (let j = 1; j <= maxCols; j++) {
-      let col = document.createElement("div");
+      const col = document.createElement("div");
       col.id = `l${i}${j}`;
       col.classList.add("play-grid-cell");
       row.appendChild(col);
@@ -66,10 +66,10 @@ const load_page_data = async () => {
 
   // 5. Initialize all the buttons.
   // 5a. Initialize the keyboard buttons.
-  const button_arr = document.getElementsByClassName(
+  const buttonarr = document.getElementsByClassName(
     "letterButton"
   ) as HTMLCollectionOf<HTMLButtonElement>;
-  for (const element of button_arr) {
+  for (const element of buttonarr) {
     element.addEventListener("click", function () {
       addLetter(this);
     });
@@ -114,7 +114,7 @@ function addLetter(btn: HTMLButtonElement) {
 
   let attempt = sessionStorage.getItem("attempt");
   const attemptCount = Number(sessionStorage.getItem("attemptCount"));
-  let cell = document.getElementById(`l${attemptCount}${position}`);
+  const cell = document.getElementById(`l${attemptCount}${position}`);
 
   cell.textContent = btn.textContent;
   sessionStorage.setItem("position", String(position + 1));
@@ -128,9 +128,9 @@ function popLetter() {
   const isFinished = sessionStorage.getItem("isFinished") === "true";
   if (isFinished) return;
 
-  let attempt = sessionStorage.getItem("attempt");
+  const attempt = sessionStorage.getItem("attempt");
   const attemptCount = Number(sessionStorage.getItem("attemptCount"));
-  let cell = document.getElementById(`l${attemptCount}${position - 1}`);
+  const cell = document.getElementById(`l${attemptCount}${position - 1}`);
 
   cell.textContent = "";
   sessionStorage.setItem("position", String(position - 1));
@@ -159,9 +159,9 @@ function validateAttempt() {
   // confirm the correctness of each character
   let checkingWord = correctWord;
   for (let i = 0; i < wordLength; i++) {
-    let attemptChar = attempt[i];
-    let rightChar = checkingWord[i];
-    let element = document.getElementById(`l${attemptCount}${i + 1}`);
+    const attemptChar = attempt[i];
+    const rightChar = checkingWord[i];
+    const element = document.getElementById(`l${attemptCount}${i + 1}`);
 
     if (attemptChar == rightChar) {
       // remove the letter from the checking word so it wont accidentally
@@ -184,9 +184,9 @@ function validateAttempt() {
     console.log("Congrats");
     sessionStorage.setItem("isFinished", String(true));
 
-    // this will be used in the finished_js file
-    localStorage.setItem("correct_word", correctWord);
-    localStorage.setItem("attempts_taken", String(attemptCount));
+    // this will be used in the finishedjs file
+    localStorage.setItem("correctword", correctWord);
+    localStorage.setItem("attemptstaken", String(attemptCount));
     // redirect to the next page
     window.location.href = "/html/finished.html";
     return;
@@ -202,11 +202,11 @@ function validateAttempt() {
 
   // no more attempts left. Redirect to new page with a zero score.
   console.log("You noob");
-  localStorage.setItem("correct_word", correctWord);
-  localStorage.setItem("attempts_taken", String(maxAttempts));
+  localStorage.setItem("correctword", correctWord);
+  localStorage.setItem("attemptstaken", String(maxAttempts));
   sessionStorage.setItem("isFinished", String(true));
   // redirect to the next page
   window.location.href = "/html/finished.html";
 }
 
-window.addEventListener("load", load_page_data, false);
+window.addEventListener("load", loadpagedata, false);

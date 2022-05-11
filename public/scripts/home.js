@@ -1,10 +1,10 @@
 // stuff
 import globalSettings from "./globals.js";
 // quasi-"main" function
-const load_page_data = function () {
+const loadpagedata = function () {
     // set up all the stuff
-    const settings_dialog = document.getElementById("settingsDialog");
-    const mechanics_dialog = document.getElementById("mechanics");
+    const settingsdialog = document.getElementById("settingsDialog");
+    const mechanicsdialog = document.getElementById("mechanics");
     document
         .querySelector("#settingsForm")
         .addEventListener("submit", function () {
@@ -16,12 +16,12 @@ const load_page_data = function () {
     document.querySelector("#hints").addEventListener("change", () => {
         disableInput(document.querySelector("#hintColor"));
     });
-    let btns = document.querySelectorAll("main > button");
+    const btns = document.querySelectorAll("main > button");
     btns[0].addEventListener("click", () => {
-        toggleVisibility(mechanics_dialog);
+        toggleVisibility(mechanicsdialog);
     });
     btns[1].addEventListener("click", () => {
-        toggleVisibility(settings_dialog);
+        toggleVisibility(settingsdialog);
     });
     btns[2].addEventListener("click", () => {
         location.href = "/html/game.html";
@@ -32,7 +32,7 @@ const load_page_data = function () {
     document
         .querySelector("#mechanics > button")
         .addEventListener("click", () => {
-        toggleVisibility(mechanics_dialog);
+        toggleVisibility(mechanicsdialog);
     });
 };
 /**
@@ -58,31 +58,31 @@ function disableInput(target) {
     target.disabled = !target.disabled;
 }
 /**
- * Sets the bounds for the max_attempt_input element using information gathered
- * from the word_length_input element: namely, that twice the word length
+ * Sets the bounds for the maxattemptinput element using information gathered
+ * from the wordlengthinput element: namely, that twice the word length
  * inputted should be exactly equal to the maximum element. It will also affect
  * the spans with ids "minBound" and "maxBound", even though
  * it does not take those elements as inputs.
  *
  * This function is not pure.
- * @param word_length_input The form input element containing the length of the word.
- * @param max_attempt_input The form input element containing the max attempt. Note:
+ * @param wordlengthinput The form input element containing the length of the word.
+ * @param maxattemptinput The form input element containing the max attempt. Note:
  * this element will be manipulated, unlike the previous one, which is const.
  */
-function setMaxAttemptBounds(word_length_input, max_attempt_input) {
-    var min = Number(word_length_input.value);
-    var max = 2 * min;
+function setMaxAttemptBounds(wordlengthinput, maxattemptinput) {
+    const min = Number(wordlengthinput.value);
+    const max = 2 * min;
     // Change input field attr
-    max_attempt_input.min = min.toString();
-    max_attempt_input.max = max.toString();
+    maxattemptinput.min = min.toString();
+    maxattemptinput.max = max.toString();
     // Change display
     document.getElementById("minBound").textContent = min.toString();
     document.getElementById("maxBound").textContent = max.toString();
 }
-const validateWordBank = (input_bank, word_length) => {
-    let lettersPattern = /^[a-zA-Z]+$/;
-    let spacesPattern = /(\s+)/;
-    let wordArray = input_bank.split(spacesPattern);
+const validateWordBank = (inputbank, wordlength) => {
+    const lettersPattern = /^[a-zA-Z]+$/;
+    const spacesPattern = /(\s+)/;
+    const wordArray = inputbank.split(spacesPattern);
     for (let i = 0; i < wordArray.length; i++) {
         if (wordArray[i].includes(" "))
             wordArray.splice(i, 1);
@@ -94,8 +94,8 @@ const validateWordBank = (input_bank, word_length) => {
             alert(`Sorry, but words like ${wordArray[i]} are not valid since they contain characters that are not letters`);
             return false;
         }
-        if (wordArray[i].length != word_length) {
-            alert(`${wordArray[i]} is not a ${word_length}-letter word`);
+        if (wordArray[i].length != wordlength) {
+            alert(`${wordArray[i]} is not a ${wordlength}-letter word`);
             return false;
         }
     }
@@ -111,8 +111,8 @@ function saveSettings(form) {
     globalSettings.setSettings(new FormData(form));
     globalSettings.saveSettings();
     // validate the word bank
-    const word_bank = form.querySelector("textarea").value;
-    if (!validateWordBank(word_bank, globalSettings.wordLength)) {
+    const wordbank = form.querySelector("textarea").value;
+    if (!validateWordBank(wordbank, globalSettings.wordLength)) {
         return false;
     }
     // store the 2 colors in the necessary variables
@@ -122,5 +122,5 @@ function saveSettings(form) {
     toggleVisibility(document.querySelector("#settingsDialog"));
     return false;
 }
-window.addEventListener("load", load_page_data, false);
+window.addEventListener("load", loadpagedata, false);
 //# sourceMappingURL=home.js.map

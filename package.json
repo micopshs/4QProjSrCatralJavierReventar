@@ -6,7 +6,9 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "node index.js"
+        "start": "node index.js",
+        "lint": "eslint public/ --ext .ts",
+        "lint-fix": "eslint public/ --ext .ts --fix"
     },
     "engines": {
         "node": ">= 12.0.0"
@@ -16,6 +18,9 @@
     },
     "devDependencies": {
         "@types/node": "^17.0.31",
+        "@typescript-eslint/eslint-plugin": "^5.23.0",
+        "@typescript-eslint/parser": "^5.23.0",
+        "eslint": "^8.15.0",
         "prettier": "^2.6.2",
         "typescript": "^4.6.4"
     },

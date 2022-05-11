@@ -1,172 +1,172 @@
 // stuff
 import globalSettings from "./globals.js";
 // quasi"main" function
-var load_page_data = function () {
+const loadpagedata = function () {
     // variables
-    const taken_attempts = Number(localStorage.getItem("attempts_taken"));
-    localStorage.removeItem("attempts_taken");
-    const max_attempts = globalSettings.maxAttempts;
-    const word_length = globalSettings.wordLength;
+    const takenattempts = Number(localStorage.getItem("attemptstaken"));
+    localStorage.removeItem("attemptstaken");
+    const maxattempts = globalSettings.maxAttempts;
+    const wordlength = globalSettings.wordLength;
     // 1bis. fill in the correct word
-    document.getElementById("correct_word").textContent =
-        localStorage.getItem("correct_word");
-    localStorage.removeItem("correct_word");
+    document.getElementById("correctword").textContent =
+        localStorage.getItem("correctword");
+    localStorage.removeItem("correctword");
     // 1. generate the current score
-    const current_score = calculate_score(taken_attempts, max_attempts, word_length);
-    document.getElementById("current_score").textContent =
-        current_score.toString();
+    const currentscore = calculatescore(takenattempts, maxattempts, wordlength);
+    document.getElementById("currentscore").textContent =
+        currentscore.toString();
     // 2. generate the total score
-    let total_score = calculate_total_score(current_score);
-    document.getElementById("total_score").textContent = total_score.toString();
+    const totalscore = calculatetotalscore(currentscore);
+    document.getElementById("totalscore").textContent = totalscore.toString();
     // 3. get the variables for the past tries
-    let past_attempt_string = localStorage.getItem("VERBATIM_LS_past_attempts");
-    let past_attempts = [];
-    if (past_attempt_string !== null) {
-        past_attempts = JSON.parse(past_attempt_string);
+    const pastattemptstring = localStorage.getItem("VERBATIMLSpastattempts");
+    let pastattempts = [];
+    if (pastattemptstring !== null) {
+        pastattempts = JSON.parse(pastattemptstring);
     }
-    past_attempts.push({
-        takenAttempts: taken_attempts,
-        maximumAttempts: max_attempts,
-        wordLength: word_length,
-        score: current_score,
+    pastattempts.push({
+        takenAttempts: takenattempts,
+        maximumAttempts: maxattempts,
+        wordLength: wordlength,
+        score: currentscore,
     });
-    localStorage.setItem("VERBATIM_LS_past_attempts", JSON.stringify(past_attempts));
+    localStorage.setItem("VERBATIMLSpastattempts", JSON.stringify(pastattempts));
     // 4. manipulate the div into showing us our results
-    let container_same_ctgy = document.getElementById("recent_attempts_same_ctgy");
-    write_same_ctgy_leaderboard(container_same_ctgy, past_attempts);
-    let container_cross_ctgy = document.getElementById("recent_categories");
-    write_cross_ctgy_leaderboard(container_cross_ctgy, past_attempts);
+    const containersamectgy = document.getElementById("recentattemptssamectgy");
+    writesamectgyleaderboard(containersamectgy, pastattempts);
+    const containercrossctgy = document.getElementById("recentcategories");
+    writecrossctgyleaderboard(containercrossctgy, pastattempts);
     // 5. add necessary things to page data
-    document.getElementById("back_to_start").addEventListener("click", () => {
+    document.getElementById("backtostart").addEventListener("click", () => {
         window.location.href = "/html/home.html";
     });
 };
-var calculate_score = function (taken_attempts, max_attempts, word_length) {
+var calculatescore = function (takenattempts, maxattempts, wordlength) {
     // for example, if the player took all 6 attempts out of 6,
     // their attempt fraction is 1/6; 5 attempts, 2/6, and so on.
-    const taken_attempt_fraction = Number(((max_attempts - taken_attempts + 1) / max_attempts).toPrecision(10));
+    const takenattemptfraction = Number(((maxattempts - takenattempts + 1) / maxattempts).toPrecision(10));
     // disincentivises taking too many attempts.
     // for example, if a person takes 5 attempts with 6 maximum,
     // their score is higher than if they took 5 attempts with 7 maximum.
-    const total_attempt_fraction = 0.5 ** (max_attempts - word_length - 1);
-    const current_score = Math.ceil(100 * total_attempt_fraction * taken_attempt_fraction);
-    return current_score;
+    const totalattemptfraction = 0.5 ** (maxattempts - wordlength - 1);
+    const currentscore = Math.ceil(100 * totalattemptfraction * takenattemptfraction);
+    return currentscore;
 };
-var calculate_total_score = function (current_score) {
-    let past_total_score = Number(localStorage.getItem("VERBATIM_LS_total_score"));
-    if (isNaN(past_total_score) || past_total_score == null) {
-        past_total_score = 0;
+var calculatetotalscore = function (currentscore) {
+    let pasttotalscore = Number(localStorage.getItem("VERBATIMLStotalscore"));
+    if (isNaN(pasttotalscore) || pasttotalscore == null) {
+        pasttotalscore = 0;
     }
-    const new_total_score = past_total_score + current_score;
-    localStorage.setItem("VERBATIM_LS_total_score", new_total_score.toString());
-    return new_total_score;
+    const newtotalscore = pasttotalscore + currentscore;
+    localStorage.setItem("VERBATIMLStotalscore", newtotalscore.toString());
+    return newtotalscore;
 };
-const make_histogram = (array) => {
-    let histogram = new Map();
+const makehistogram = (array) => {
+    const histogram = new Map();
     for (const num of array) {
         histogram.set(num, histogram.get(num) ? histogram.get(num) + 1 : 1);
     }
     return histogram;
 };
-const map_to_obj = (map) => {
+const maptoobj = (map) => {
     const obj = {};
-    for (let [k, v] of map)
+    for (const [k, v] of map)
         obj[k] = v;
     return obj;
 };
-const construct_label = (str) => {
-    let element = document.createElement("p");
+const constructlabel = (str) => {
+    const element = document.createElement("p");
     element.appendChild(document.createTextNode(str));
     return element;
 };
-const construct_bar = (given_num, greatest_num, special_value = false) => {
-    const height_px = 25;
-    const length_px = (300 * given_num) / greatest_num;
-    const text_space_px = height_px;
-    const make_svg_elem = (tag_name, content, attributes) => {
-        let element = document.createElementNS("http://www.w3.org/2000/svg", tag_name);
+const constructbar = (givennum, greatestnum, specialvalue = false) => {
+    const heightpx = 25;
+    const lengthpx = (300 * givennum) / greatestnum;
+    const textspacepx = heightpx;
+    const makesvgelem = (tagname, content, attributes) => {
+        const element = document.createElementNS("http://www.w3.org/2000/svg", tagname);
         element.appendChild(document.createTextNode(content));
-        for (let attr of attributes) {
+        for (const attr of attributes) {
             element.setAttribute(attr[0], attr[1]);
         }
         return element;
     };
     // prepare the element
-    let svg_elem = make_svg_elem("svg", "", new Map([
+    const svgelem = makesvgelem("svg", "", new Map([
         ["version", "1.1"],
-        ["height", height_px.toString()],
-        ["width", (300 + text_space_px).toString()],
+        ["height", heightpx.toString()],
+        ["width", (300 + textspacepx).toString()],
     ]));
-    svg_elem.appendChild(make_svg_elem("rect", "", new Map([
+    svgelem.appendChild(makesvgelem("rect", "", new Map([
         ["height", "100%"],
-        ["width", `${length_px + text_space_px}px`],
+        ["width", `${lengthpx + textspacepx}px`],
         ["cx", "10px"],
         ["cy", "10px"],
-        ["class", `${special_value ? "bar-special" : "bar-normal"}`],
+        ["class", `${specialvalue ? "bar-special" : "bar-normal"}`],
     ])));
-    svg_elem.appendChild(make_svg_elem("text", given_num.toString(), new Map([
-        ["x", `${length_px}`],
+    svgelem.appendChild(makesvgelem("text", givennum.toString(), new Map([
+        ["x", `${lengthpx}`],
         ["y", "0px"],
         ["text-anchor", "start"],
     ])));
-    return svg_elem;
+    return svgelem;
 };
-var write_same_ctgy_leaderboard = function (container, past_attempts) {
+var writesamectgyleaderboard = function (container, pastattempts) {
     // get attempts in the same category
-    const last_attempt = past_attempts[past_attempts.length - 1];
-    const ctgy_word_length = last_attempt.wordLength;
-    const same_ctgy_attempts = past_attempts.filter((attempt) => attempt.wordLength === ctgy_word_length);
+    const lastattempt = pastattempts[pastattempts.length - 1];
+    const ctgywordlength = lastattempt.wordLength;
+    const samectgyattempts = pastattempts.filter((attempt) => attempt.wordLength === ctgywordlength);
     // figure out the exact leaderboard
-    const same_ctgy_taken_attempts = same_ctgy_attempts.map((attempt) => attempt.takenAttempts);
-    let same_ctgy_leaderboard = make_histogram(same_ctgy_taken_attempts);
+    const samectgytakenattempts = samectgyattempts.map((attempt) => attempt.takenAttempts);
+    const samectgyleaderboard = makehistogram(samectgytakenattempts);
     // ensure that every number from 1 upward has its own thing
-    for (let i = 1; i <= ctgy_word_length + 1; ++i) {
-        if (!same_ctgy_leaderboard.get(i)) {
-            same_ctgy_leaderboard.set(i, 0);
+    for (let i = 1; i <= ctgywordlength + 1; ++i) {
+        if (!samectgyleaderboard.get(i)) {
+            samectgyleaderboard.set(i, 0);
         }
     }
     // force all the things with too high attempts into their own ctgy, -1
-    same_ctgy_leaderboard.set(-1, 0);
-    for (const i of same_ctgy_taken_attempts.filter((attempt_number) => attempt_number > ctgy_word_length + 1)) {
-        same_ctgy_leaderboard.set(-1, same_ctgy_leaderboard.get(i) + same_ctgy_leaderboard.get(-1));
-        same_ctgy_leaderboard.delete(i);
+    samectgyleaderboard.set(-1, 0);
+    for (const i of samectgytakenattempts.filter((attemptnumber) => attemptnumber > ctgywordlength + 1)) {
+        samectgyleaderboard.set(-1, samectgyleaderboard.get(i) + samectgyleaderboard.get(-1));
+        samectgyleaderboard.delete(i);
     }
     // dispose of 0 attempt things- that just means a visit
-    if (same_ctgy_leaderboard.get(0)) {
-        same_ctgy_leaderboard.delete(0);
+    if (samectgyleaderboard.get(0)) {
+        samectgyleaderboard.delete(0);
     }
     // make the leaderboard
-    const max_try_count = Math.max(...same_ctgy_leaderboard.values());
-    for (let [try_number, try_count] of same_ctgy_leaderboard) {
-        container.append(construct_label(`${try_number === -1 ? "Other" : try_number}`));
-        container.append(construct_bar(try_count, max_try_count, last_attempt.takenAttempts === try_number));
+    const maxtrycount = Math.max(...samectgyleaderboard.values());
+    for (const [trynumber, trycount] of samectgyleaderboard) {
+        container.append(constructlabel(`${trynumber === -1 ? "Other" : trynumber}`));
+        container.append(constructbar(trycount, maxtrycount, lastattempt.takenAttempts === trynumber));
     }
 };
-var write_cross_ctgy_leaderboard = function (container, past_attempts, special_value = false) {
-    const last_attempt = past_attempts[past_attempts.length - 1];
-    const last_word_length = last_attempt.wordLength;
+var writecrossctgyleaderboard = function (container, pastattempts, specialvalue = false) {
+    const lastattempt = pastattempts[pastattempts.length - 1];
+    const lastwordlength = lastattempt.wordLength;
     // figure out the leaderboard
-    const taken_categories = past_attempts.map((attempt) => attempt.wordLength);
-    const cross_ctgy_leaderboard = make_histogram(taken_categories);
+    const takencategories = pastattempts.map((attempt) => attempt.wordLength);
+    const crossctgyleaderboard = makehistogram(takencategories);
     // TODO: FIX LATER TO NOT USE MAGIC CONSTANTS
     // ensure that each category has its own thing
     for (let i = 4; i <= 7; ++i) {
-        if (!cross_ctgy_leaderboard.get(i)) {
-            cross_ctgy_leaderboard.set(i, 0);
+        if (!crossctgyleaderboard.get(i)) {
+            crossctgyleaderboard.set(i, 0);
         }
     }
     // if there are strays, put it in a -1 space
-    cross_ctgy_leaderboard.set(-1, 0);
-    for (const odd_category of taken_categories.filter((category_num) => category_num > 7 || category_num < 4)) {
-        cross_ctgy_leaderboard.set(-1, cross_ctgy_leaderboard.get(-1) + cross_ctgy_leaderboard.get(odd_category));
-        cross_ctgy_leaderboard.delete(odd_category);
+    crossctgyleaderboard.set(-1, 0);
+    for (const oddcategory of takencategories.filter((categorynum) => categorynum > 7 || categorynum < 4)) {
+        crossctgyleaderboard.set(-1, crossctgyleaderboard.get(-1) + crossctgyleaderboard.get(oddcategory));
+        crossctgyleaderboard.delete(oddcategory);
     }
     // create that leaderboard
-    const most_attempted_ctgy = Math.max(...cross_ctgy_leaderboard.values());
-    for (let [category, category_count] of cross_ctgy_leaderboard) {
-        container.append(construct_label(`${category === -1 ? "Other" : category}`));
-        container.append(construct_bar(category_count, most_attempted_ctgy, special_value));
+    const mostattemptedctgy = Math.max(...crossctgyleaderboard.values());
+    for (const [category, categorycount] of crossctgyleaderboard) {
+        container.append(constructlabel(`${category === -1 ? "Other" : category}`));
+        container.append(constructbar(categorycount, mostattemptedctgy, specialvalue));
     }
 };
-window.addEventListener("load", load_page_data, false);
+window.addEventListener("load", loadpagedata, false);
 //# sourceMappingURL=finished.js.map

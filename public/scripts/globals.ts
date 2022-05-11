@@ -1,12 +1,10 @@
 // stuff
 
-import { type } from "os";
-
 type RGB = `rgb(${number}, ${number}, ${number})`;
 type RGBA = `rgba(${number}, ${number}, ${number}, ${number})`;
 type HEX = `#${string}`;
 
-// I don't know why, but the set_settings thing needs Color to be
+// I don't know why, but the setsettings thing needs Color to be
 // equivalent to string.
 type Color = RGB | RGBA | HEX | string;
 
@@ -20,24 +18,24 @@ class GlobalSettings {
   wordPool?: string[] | undefined = undefined;
 
   constructor() {
-    if (localStorage.getItem("VERBATIM_LS_global_settings") !== undefined) {
+    if (localStorage.getItem("VERBATIMLSglobalsettings") !== undefined) {
       Object.assign(
         this,
-        JSON.parse(localStorage.getItem("VERBATIM_LS_global_settings"))
+        JSON.parse(localStorage.getItem("VERBATIMLSglobalsettings"))
       );
     }
   }
-  setSettings(form_data: FormData) {
-    this.wordLength = Number(form_data.get("wordLength"));
-    this.maxAttempts = Number(form_data.get("maxAttempts"));
-    this.hintsPermitted = Boolean(form_data.get("hints"));
-    this.correctColor = String(form_data.get("correctColor"));
-    this.hintColor = String(form_data.get("hintColor"));
+  setSettings(formdata: FormData) {
+    this.wordLength = Number(formdata.get("wordLength"));
+    this.maxAttempts = Number(formdata.get("maxAttempts"));
+    this.hintsPermitted = Boolean(formdata.get("hints"));
+    this.correctColor = String(formdata.get("correctColor"));
+    this.hintColor = String(formdata.get("hintColor"));
     // use commented line when functionality is added
-    //this.useWordPool = Boolean(form_data.get("useWordPool"));
+    //this.useWordPool = Boolean(formdata.get("useWordPool"));
     this.useWordPool =
-      form_data.get("wordPool") === undefined ||
-      Array(form_data.get("wordPool")) === [""];
+      formdata.get("wordPool") === undefined ||
+      Array(formdata.get("wordPool")) === [""];
 
     /* Previous validatory system (add later if necessary as array.maps)
     for (let i = 0; i < listArray.length; i++) {
@@ -49,7 +47,7 @@ class GlobalSettings {
     outputArray.push(listArray[i]);
   }
     */
-    this.wordPool = String(form_data.get("wordPool")).split(" ");
+    this.wordPool = String(formdata.get("wordPool")).split(" ");
   }
   isEmpty(): boolean {
     return (
@@ -63,10 +61,10 @@ class GlobalSettings {
     );
   }
   saveSettings() {
-    localStorage.setItem("VERBATIM_LS_global_settings", JSON.stringify(this));
+    localStorage.setItem("VERBATIMLSglobalsettings", JSON.stringify(this));
   }
 }
 
-let globalSettings = new GlobalSettings();
+const globalSettings = new GlobalSettings();
 
 export default globalSettings;

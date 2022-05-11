@@ -8,21 +8,21 @@ class GlobalSettings {
         this.useWordPool = undefined;
         this.hintColor = undefined;
         this.wordPool = undefined;
-        if (localStorage.getItem("VERBATIM_LS_global_settings") !== undefined) {
-            Object.assign(this, JSON.parse(localStorage.getItem("VERBATIM_LS_global_settings")));
+        if (localStorage.getItem("VERBATIMLSglobalsettings") !== undefined) {
+            Object.assign(this, JSON.parse(localStorage.getItem("VERBATIMLSglobalsettings")));
         }
     }
-    setSettings(form_data) {
-        this.wordLength = Number(form_data.get("wordLength"));
-        this.maxAttempts = Number(form_data.get("maxAttempts"));
-        this.hintsPermitted = Boolean(form_data.get("hints"));
-        this.correctColor = String(form_data.get("correctColor"));
-        this.hintColor = String(form_data.get("hintColor"));
+    setSettings(formdata) {
+        this.wordLength = Number(formdata.get("wordLength"));
+        this.maxAttempts = Number(formdata.get("maxAttempts"));
+        this.hintsPermitted = Boolean(formdata.get("hints"));
+        this.correctColor = String(formdata.get("correctColor"));
+        this.hintColor = String(formdata.get("hintColor"));
         // use commented line when functionality is added
-        //this.useWordPool = Boolean(form_data.get("useWordPool"));
+        //this.useWordPool = Boolean(formdata.get("useWordPool"));
         this.useWordPool =
-            form_data.get("wordPool") === undefined ||
-                Array(form_data.get("wordPool")) === [""];
+            formdata.get("wordPool") === undefined ||
+                Array(formdata.get("wordPool")) === [""];
         /* Previous validatory system (add later if necessary as array.maps)
         for (let i = 0; i < listArray.length; i++) {
         if (listArray[i].includes(" ")) listArray.splice(i, 1);
@@ -33,7 +33,7 @@ class GlobalSettings {
         outputArray.push(listArray[i]);
       }
         */
-        this.wordPool = String(form_data.get("wordPool")).split(" ");
+        this.wordPool = String(formdata.get("wordPool")).split(" ");
     }
     isEmpty() {
         return (this.wordLength === undefined ||
@@ -46,9 +46,9 @@ class GlobalSettings {
         );
     }
     saveSettings() {
-        localStorage.setItem("VERBATIM_LS_global_settings", JSON.stringify(this));
+        localStorage.setItem("VERBATIMLSglobalsettings", JSON.stringify(this));
     }
 }
-let globalSettings = new GlobalSettings();
+const globalSettings = new GlobalSettings();
 export default globalSettings;
 //# sourceMappingURL=globals.js.map
