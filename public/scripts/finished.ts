@@ -12,7 +12,6 @@ interface VerbatimAttempt {
 
 // quasi"main" function
 var load_page_data = function () {
-  console.log("here");
   // variables
   const taken_attempts = Number(localStorage.getItem("attempts_taken"));
   localStorage.removeItem("attempts_taken");
@@ -20,7 +19,8 @@ var load_page_data = function () {
   const word_length = globalSettings.wordLength;
 
   // 1bis. fill in the correct word
-  document.getElementById("correct_word").textContent = localStorage.getItem("correct_word");
+  document.getElementById("correct_word").textContent =
+    localStorage.getItem("correct_word");
   localStorage.removeItem("correct_word");
 
   // 1. generate the current score
@@ -61,6 +61,11 @@ var load_page_data = function () {
   write_same_ctgy_leaderboard(container_same_ctgy, past_attempts);
   let container_cross_ctgy = document.getElementById("recent_categories");
   write_cross_ctgy_leaderboard(container_cross_ctgy, past_attempts);
+
+  // 5. add necessary things to page data
+  document.getElementById("back_to_start").addEventListener("click", () => {
+    window.location.href = "/html/home.html";
+  });
 };
 
 var calculate_score = function (
@@ -216,6 +221,10 @@ var write_same_ctgy_leaderboard = function (
       same_ctgy_leaderboard.get(i) + same_ctgy_leaderboard.get(-1)
     );
     same_ctgy_leaderboard.delete(i);
+  }
+  // dispose of 0 attempt things- that just means a visit
+  if (same_ctgy_leaderboard.get(0)) {
+    same_ctgy_leaderboard.delete(0);
   }
 
   // make the leaderboard

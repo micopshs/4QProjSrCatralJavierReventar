@@ -2,14 +2,14 @@
 import globalSettings from "./globals.js";
 // quasi"main" function
 var load_page_data = function () {
-    console.log("here");
     // variables
     const taken_attempts = Number(localStorage.getItem("attempts_taken"));
     localStorage.removeItem("attempts_taken");
     const max_attempts = globalSettings.maxAttempts;
     const word_length = globalSettings.wordLength;
     // 1bis. fill in the correct word
-    document.getElementById("correct_word").textContent = localStorage.getItem("correct_word");
+    document.getElementById("correct_word").textContent =
+        localStorage.getItem("correct_word");
     localStorage.removeItem("correct_word");
     // 1. generate the current score
     const current_score = calculate_score(taken_attempts, max_attempts, word_length);
@@ -36,6 +36,10 @@ var load_page_data = function () {
     write_same_ctgy_leaderboard(container_same_ctgy, past_attempts);
     let container_cross_ctgy = document.getElementById("recent_categories");
     write_cross_ctgy_leaderboard(container_cross_ctgy, past_attempts);
+    // 5. add necessary things to page data
+    document.getElementById("back_to_start").addEventListener("click", () => {
+        window.location.href = "/html/home.html";
+    });
 };
 var calculate_score = function (taken_attempts, max_attempts, word_length) {
     // for example, if the player took all 6 attempts out of 6,
@@ -126,6 +130,10 @@ var write_same_ctgy_leaderboard = function (container, past_attempts) {
     for (const i of same_ctgy_taken_attempts.filter((attempt_number) => attempt_number > ctgy_word_length + 1)) {
         same_ctgy_leaderboard.set(-1, same_ctgy_leaderboard.get(i) + same_ctgy_leaderboard.get(-1));
         same_ctgy_leaderboard.delete(i);
+    }
+    // dispose of 0 attempt things- that just means a visit
+    if (same_ctgy_leaderboard.get(0)) {
+        same_ctgy_leaderboard.delete(0);
     }
     // make the leaderboard
     const max_try_count = Math.max(...same_ctgy_leaderboard.values());

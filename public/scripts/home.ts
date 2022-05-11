@@ -93,7 +93,7 @@ function setMaxAttemptBounds(
   document.getElementById("maxBound").textContent = max.toString();
 }
 
-const validateWordBank = (input_bank : string, word_length : number) => {
+const validateWordBank = (input_bank: string, word_length: number) => {
   let lettersPattern = /^[a-zA-Z]+$/;
   let spacesPattern = /(\s+)/;
   let wordArray = input_bank.split(spacesPattern);

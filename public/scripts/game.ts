@@ -167,7 +167,7 @@ function validateAttempt() {
       // remove the letter from the checking word so it wont accidentally
       // activate another yellow card
       checkingWord = checkingWord.replace(attemptChar, " ");
-      
+
       element.classList.add("guess-right-place");
     } else if (checkingWord.includes(attemptChar)) {
       // remove the letter as well

@@ -1,4 +1,4 @@
-@import 'main.css';
+@import "main.css";
 
 * {
   box-sizing: border-box;
@@ -31,9 +31,9 @@ main {
 #buttonsGrid button {
   width: fit-content;
   margin: 0 3px;
-  font-family: 'Radio Canada', sans-serif;
-  height: 55px; 
-  flex-grow: 1; 
+  font-family: "Radio Canada", sans-serif;
+  height: 55px;
+  flex-grow: 1;
   min-width: 50px;
 }
 
@@ -66,7 +66,7 @@ main {
 }
 
 .play-grid-cell {
-  font-family: 'Radio Canada', sans-serif;
+  font-family: "Radio Canada", sans-serif;
   flex-grow: 1;
   border: 2px solid gray;
   width: 60px;
@@ -74,7 +74,7 @@ main {
   margin: 5px;
   display: flex;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   border-radius: 5px;
   font-size: 150%;
 }

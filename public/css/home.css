@@ -1,7 +1,7 @@
-@import 'main.css';
+@import "main.css";
 
 body {
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: "IBM Plex Sans", sans-serif;
   text-align: center;
 }
 
@@ -28,14 +28,14 @@ dialog {
 
   text-align: center;
   width: 50vw;
-  min-width: 300px; 
+  min-width: 300px;
   padding: 20px 50px;
   border-radius: 10px;
 }
 
 dialog > h1 {
   text-transform: uppercase;
-  font-family: 'Radio Canada', sans-serif;
+  font-family: "Radio Canada", sans-serif;
 }
 
 dialog > form {
@@ -67,7 +67,7 @@ dialog > form > div#keybuttons > input {
   padding: 5px 10px;
   border-radius: 5px;
   border: 1px solid black;
-    
+
   background: none;
   font-family: inherit;
 }
@@ -83,9 +83,9 @@ dialog > div {
 dialog > div > ul > li > .perfectGuess {
   font-weight: bold;
   color: var(--guess-right-place);
-} 
+}
 
 dialog > div > ul > li > .imperfectGuess {
   font-weight: bold;
   color: var(--guess-wrong-place);
-} 
+}
