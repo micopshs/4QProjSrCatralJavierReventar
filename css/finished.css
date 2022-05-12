@@ -1,0 +1,49 @@
+@import 'main.css';
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  text-align: center;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+h1, h2 {
+  text-transform: uppercase;
+  font-family: 'Radio Canada', sans-serif;
+}
+
+#container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+  width: 50vw;
+  min-width: 300px; 
+  padding: 20px 50px;
+  border-radius: 10px;
+
+  border: 3px solid black;
+  border-radius: 10px;
+  padding: 2% 2% 3% 2%;
+}
+
+#otherStats {
+  display: flex;
+  align-items: flex-start;
+  margin: 1% 0 3%;
+}
+
+#otherStats > h3 {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: normal;
+  margin: auto;
+  width: 200px;
+  font-size: 110%;
+}
+
+button {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+

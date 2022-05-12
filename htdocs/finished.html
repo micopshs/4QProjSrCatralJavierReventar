@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <!-- Page Name -->
-    <title>Verbatim: Playing Grid</title>
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta name="author" content="S.E. Catral, O.M. Javier, and R.A. Reventar">
-    <meta name="description" content="A wordle implementation">
-    <meta name="keywords" content="HTML CSS JavaScript">
-    <meta name="revised" content="29-04-2022">
-    <!-- CSS / JS -->
-    <script src="../scripts/finished.js" defer></script>
-  </head>
-  <body>
-    <h1>Finished</h1>
+<head>
+  <!-- Page Name -->
+  <title>Verbatim: Playing Grid</title>
+  <!-- Meta Tags -->
+  <meta charset="utf-8">
+  <meta name="author" content="S.E. Catral, O.M. Javier, and R.A. Reventar">
+  <meta name="description" content="A wordle implementation">
+  <meta name="keywords" content="HTML CSS JavaScript">
+  <meta name="revised" content="11-05-2022">
+  <!-- CSS / JS -->
+  <script src="../scripts/finished.js" defer></script>
+  <link rel="stylesheet" href="../css/finished.css">
+</head>
+<body>
+  <div id="container">
+    <h1>Game finished!</h1>
     <h2>Score: <span id="current_score"></span></h2>
-    <h2>Total: <span id="total_score"></span></h2>
-    <h2>Recent attempts in the same category:</h2>
-    <div id="recent_attempts_same_ctgy"></div>
-    <h2>Recent categories:</h2>
-    <div id="recent_categories"></div>
+    <!-- Temporary dummy data -->
+    <div id="otherStats">
+      <h3>Total: <div id="total_score"></div></h3>
+      <h3>Recent attempts in the same category: <div id="recent_attempts_same_ctgy">12</div></h3>
+      <h3>Recent categories: <div id="recent_categories">12</div></h3>
+    </div>
     <nav>
       <button onclick="location.href='./game.html'">Previous (Game)</button>
       <button onclick="location.href='../index.html'">Back to Home</button>
     </nav>
-  </body>
+  </div>
+</body>
 </html>
